@@ -50,7 +50,6 @@
       }
       const res = await call('/aiwa/v1/apply', { post_id: postId, suggestion: s });
       if (res) {
-        // Re-run analysis after apply
         await doAnalyze();
       }
     }
@@ -64,16 +63,17 @@
         error && window.wp.element.createElement(Notice, { status: 'error', isDismissible: true }, error),
         window.wp.element.createElement(Button, { isPrimary: true, isBusy: busy, onClick: doAnalyze }, 'Analyze'),
         window.wp.element.createElement(Button, { style: { marginLeft: 8 }, isBusy: busy, onClick: doSuggest }, 'Suggest'),
-        window.wp.element.createElement('div', { style: { marginTop: 12 } },
+        window.wp.element.createElement('div', { style: { marginTop: 12, display: 'flex', gap: 8, flexWrap: 'wrap' } },
           window.wp.element.createElement(Button, { isBusy: busy, onClick: () => doApply('seo_meta') }, 'Apply Yoast SEO Meta'),
-          window.wp.element.createElement(Button, { style: { marginLeft: 8 }, isBusy: busy, onClick: () => doApply('image_alt') }, 'Apply Alt Text'),
-          window.wp.element.createElement(Button, { style: { marginLeft: 8 }, isBusy: busy, onClick: () => doApply('cta') }, 'Apply CTA')
+          window.wp.element.createElement(Button, { isBusy: busy, onClick: () => doApply('image_alt') }, 'Apply Alt Text'),
+          window.wp.element.createElement(Button, { isBusy: busy, onClick: () => doApply('cta') }, 'Apply CTA'),
+          window.wp.element.createElement(Button, { isBusy: busy, onClick: () => doApply('rewrite_blocks') }, 'Apply Rewrites')
         )
       ),
       window.wp.element.createElement(
         PanelBody,
         { title: 'Latest result', initialOpen: false },
-        window.wp.element.createElement('pre', { style: { whiteSpace: 'pre-wrap' } },
+        window.wp.element.createElement('pre', { style: { whiteSpace: 'pre-wrap', maxHeight: 320, overflow: 'auto' } },
           JSON.stringify(suggestions || analysis || {}, null, 2)
         )
       )

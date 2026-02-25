@@ -4,7 +4,6 @@
   const output = $('aiwa-output');
   const postSelect = $('aiwa-post');
 
-  let lastAnalysis = null;
   let lastSuggestions = null;
 
   const apiFetch = window.wp.apiFetch;
@@ -21,7 +20,6 @@
       method: 'POST',
       data: { post_id: postId },
     });
-    lastAnalysis = res;
     show(res);
   }
 
@@ -62,4 +60,5 @@
   $('aiwa-apply-seo').addEventListener('click', (e) => { e.preventDefault(); apply('seo_meta').catch(err => show({ error: String(err) })); });
   $('aiwa-apply-alt').addEventListener('click', (e) => { e.preventDefault(); apply('image_alt').catch(err => show({ error: String(err) })); });
   $('aiwa-apply-cta').addEventListener('click', (e) => { e.preventDefault(); apply('cta').catch(err => show({ error: String(err) })); });
+  $('aiwa-apply-rewrite').addEventListener('click', (e) => { e.preventDefault(); apply('rewrite_blocks').catch(err => show({ error: String(err) })); });
 })();

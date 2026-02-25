@@ -4,16 +4,17 @@ AI Website Assistant (AIWA) analyzes WordPress posts/pages and generates AI-powe
 - SEO (Yoast title + meta description)
 - Accessibility (missing image alt text)
 - CTAs (insert a simple CTA block)
-- Optional: block-level rewrites (paragraphs/headings) with safety checks
+- Block-level rewrites (paragraphs/headings) with safety checks
 
-This is a BYO-LLM plugin: **you provide your own API key** (OpenAI implemented; Anthropic/Gemini can be added).
+This is a BYO-LLM plugin: **you provide your own API key** (OpenAI implemented; Anthropic/Gemini stubs included).
 
-## Features (MVP)
-- Admin settings: Provider + model + API key (encrypted-at-rest)
+## Features
+- Settings: Provider + model + API key (encrypted-at-rest)
 - Gutenberg sidebar panel:
   - Analyze
   - Suggest improvements (JSON schema enforced)
   - Apply supported suggestion types
+- Tools page (fallback) under **Tools → AI Website Assistant**
 - REST API:
   - `POST /wp-json/aiwa/v1/analyze`
   - `POST /wp-json/aiwa/v1/suggest`
@@ -31,39 +32,28 @@ If Yoast SEO is active, applying `seo_meta` updates:
 
 If Yoast is not active, meta description falls back to the WordPress excerpt.
 
-## Installation (local)
-1. Copy the plugin folder to:
-   `wp-content/plugins/ai-website-assistant/`
-2. Activate **AI Website Assistant**
-3. Configure:
-   - **Settings → AI Website Assistant**
-   - Set provider/model and paste your API key (leave blank to keep existing)
-4. Use:
-   - In the block editor, open **AI Website Assistant** in the sidebar
-
-## Security & Privacy Notes
+## Security & Safety
 - API keys are **encrypted-at-rest** using WP salts (mitigates accidental DB dump exposure).
 - API keys are never returned in REST responses.
-- All endpoints require `edit_post` capability for the target post.
-- Rate limiting is enabled (per-user) to reduce spam and surprise billing.
-- Suggested rewrites are **recommend-first** and only applied when requested.
-- Rewrite applies are protected by content hashes to avoid applying stale changes.
+- Endpoints require `edit_post` capability for the target post.
+- Per-user rate limiting on analyze/suggest/apply reduces spam and surprise billing.
+- Rewrites are **recommend-first** and only applied when requested.
+- Rewrite apply uses content hashes to avoid applying stale changes.
+- CTA apply is idempotent via an AIWA marker attribute.
 
-## Development
-- PHP 8.0+ recommended
-- No composer required (simple PSR-4-ish autoloader in `includes/Autoloader.php`).
+## Installation
+1. Copy this folder to: `wp-content/plugins/ai-website-assistant/`
+2. Activate **AI Website Assistant**
+3. Configure: **Settings → AI Website Assistant**
+4. Use in editor: open **AI Website Assistant** sidebar in the block editor.
 
-### Folder structure
-- `includes/Application`: core use-cases (analyze, suggest, apply)
-- `includes/Infrastructure`: WordPress integration (admin, REST, provider clients)
-- `assets/`: editor/admin JavaScript
-
-## Roadmap
-- Add Anthropic + Gemini implementations
-- Better CTA placement (after specific headings)
-- Site-wide dashboard and scheduled audits
-- Deeper accessibility checks (links, forms, contrast warnings)
-- Integrations: RankMath, AIOSEO
+## Development Notes
+- PHP 8.0+
+- No Composer required (simple autoloader).
+- Folder structure:
+  - `includes/Application`: core use-cases (analyze, suggest, apply)
+  - `includes/Infrastructure`: WP integration (admin, REST, provider clients, security)
+  - `assets/`: JS for tools/editor UI
 
 ## License
-MIT (or choose GPLv2+ if you plan to publish on WordPress.org)
+Choose MIT for private/internal use, or GPLv2+ if planning to publish on WordPress.org.
